@@ -4,8 +4,7 @@ import java.io.Serializable;
 
 public interface Solution {
 
-    Serializable solvePart1(String[] input);
+  Serializable solvePart1(String[] input);
 
-    Serializable solvePart2(String[] input);
-
+  Serializable solvePart2(String[] input);
 }
