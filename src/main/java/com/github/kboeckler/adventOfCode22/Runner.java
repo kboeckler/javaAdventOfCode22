@@ -36,7 +36,7 @@ public class Runner {
         String solutionPath = Runner.class.getResource("solution").getFile();
         for (File file : new File(solutionPath).listFiles()) {
             String packageName = Runner.class.getPackage().getName();
-            String binaryName = file.getAbsolutePath().replaceAll(".class", "").replaceAll("/", ".");
+            String binaryName = file.getAbsolutePath().replaceAll(".class", "").replaceAll("/", ".").replaceAll("\\\\", ".");
             int beginOfPath = binaryName.indexOf(packageName);
             binaryName = binaryName.substring(beginOfPath);
             Class<?> aClass = Runner.class.getClassLoader().loadClass(binaryName);
