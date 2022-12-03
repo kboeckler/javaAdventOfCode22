@@ -4,6 +4,10 @@
 package com.github.kboeckler.adventOfCode22;
 
 import com.github.kboeckler.adventOfCode22.solution.Solution;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -11,10 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Runner {
 
@@ -24,13 +25,21 @@ public class Runner {
     solutions.put(day, solution);
   }
 
-  private Runner() {}
+  private final Integer dayToRun;
+
+  private final OutputSupplier outputSupplier;
+
+  private Runner(Integer dayToRun, OutputSupplier outputSupplier) {
+    this.dayToRun = dayToRun;
+    this.outputSupplier = outputSupplier;
+  }
 
   public static void main(String[] args)
       throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
           InstantiationException, IllegalAccessException {
     scanSolutions();
-    new Runner().run();
+    Runner runner = createRunnerFromArgs(args);
+    runner.run();
   }
 
   private static void scanSolutions()
@@ -52,34 +61,75 @@ public class Runner {
         } catch (NoSuchMethodException | IllegalAccessException ex) {
           System.err.println(
               String.format("%s has no public no-args constructor", aClass.getName()));
-          System.exit(-1);
+          System.exit(-2);
         }
       }
     }
   }
 
+  private static Runner createRunnerFromArgs(String[] args) {
+    ArgumentParser parser =
+        ArgumentParsers.newFor("run")
+            .build()
+            .defaultHelp(true)
+            .description("Runs the Advent of Code 2022");
+    parser
+        .addArgument("-d", "--day")
+        .dest("day")
+        .type(Integer.class)
+        .help("The specific day to run");
+    parser
+        .addArgument("-s", "--short")
+        .dest("short")
+        .type(Boolean.class)
+        .help("Prints the Results in short format");
+    Namespace ns = null;
+    try {
+      ns = parser.parseArgs(args);
+      return new Runner(
+          ns.get("day"),
+          Optional.ofNullable(ns.getBoolean("short"))
+              .map(
+                  shortParam ->
+                      shortParam ? new OutputSupplier.Short() : new OutputSupplier.Verbose())
+              .orElseGet(OutputSupplier.Verbose::new));
+    } catch (ArgumentParserException ex) {
+      parser.handleError(ex);
+      System.exit(-1);
+    }
+    return null;
+  }
+
   private void run() throws IOException {
-    List<Integer> allDays = new ArrayList<>();
-    for (int day = 1; day <= 24; day++) {
-      if (solutions.containsKey(day)) {
-        allDays.add(day);
+    List<Integer> daysToRun = new ArrayList<>();
+    if (dayToRun != null) {
+      if (solutions.containsKey(dayToRun)) {
+        daysToRun.add(dayToRun);
+      } else {
+        System.err.println(String.format("There is no solution for day %d.", dayToRun));
+        System.exit(-3);
+      }
+    } else {
+      for (int day = 1; day <= 24; day++) {
+        if (solutions.containsKey(day)) {
+          daysToRun.add(day);
+        }
       }
     }
-    System.out.println("Welcome to Advent of Code 22");
-    System.out.println("###############################");
-    for (Integer day : allDays) {
+    System.out.printf(outputSupplier.welcomeMsg());
+    for (Integer day : daysToRun) {
       Solution solution = solutions.get(day);
       String inputFilename = solution.getClass().getSimpleName().toLowerCase() + ".txt";
       File inputFile = new File(Runner.class.getClassLoader().getResource(inputFilename).getFile());
       String fileContent = FileUtils.readFileToString(inputFile, Charset.forName("UTF-8"));
       String[] inputRows = fileContent.replaceAll("\r\n", "\n").split("\n");
-      System.out.print(String.format("Solving day %d #", day));
-      System.out.print(" Part1:... ");
+      System.out.print(outputSupplier.startSolving(day));
+      System.out.print(outputSupplier.startPart1());
       Serializable result1 = solution.solvePart1(inputRows);
-      System.out.print(result1);
-      System.out.print(" Part2:... ");
+      System.out.print(outputSupplier.result1(result1));
+      System.out.print(outputSupplier.startPart2());
       Serializable result2 = solution.solvePart2(inputRows);
-      System.out.print(result2);
+      System.out.print(outputSupplier.result2(result2));
       System.out.println();
     }
   }
