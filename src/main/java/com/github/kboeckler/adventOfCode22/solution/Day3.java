@@ -46,11 +46,11 @@ public class Day3 implements Solution {
   private String toSharedString(List<String> parts) {
     return parts.stream()
         .reduce(
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
             (a, b) -> {
               String nonCommonLetters = a.replaceAll("[" + b + "]", "");
               return a.replaceAll("[" + nonCommonLetters + "]", "");
-            });
+            })
+        .orElse("");
   }
 
   private int stringToPriority(String str) {
