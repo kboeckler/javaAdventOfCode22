@@ -16,7 +16,7 @@ public interface OutputSupplier {
 
   String result2(Serializable result);
 
-  public static class Verbose implements OutputSupplier {
+  class Verbose implements OutputSupplier {
 
     @Override
     public String welcomeMsg() {
@@ -49,7 +49,7 @@ public interface OutputSupplier {
     }
   }
 
-  static class Short implements OutputSupplier {
+  class Short implements OutputSupplier {
 
     @Override
     public String welcomeMsg() {

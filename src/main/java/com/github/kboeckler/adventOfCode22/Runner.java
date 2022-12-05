@@ -4,18 +4,21 @@
 package com.github.kboeckler.adventOfCode22;
 
 import com.github.kboeckler.adventOfCode22.solution.Solution;
-import net.sourceforge.argparse4j.ArgumentParsers;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.Namespace;
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
+import org.apache.commons.io.FileUtils;
 
 public class Runner {
 
@@ -126,10 +129,10 @@ public class Runner {
       System.out.print(outputSupplier.startSolving(day));
       System.out.print(outputSupplier.startPart1());
       Serializable result1 = solution.solvePart1(inputRows);
-      System.out.print(outputSupplier.result1(result1));
+      System.out.print(outputSupplier.result1(result1 == null ? "" : result1));
       System.out.print(outputSupplier.startPart2());
       Serializable result2 = solution.solvePart2(inputRows);
-      System.out.print(outputSupplier.result2(result2));
+      System.out.print(outputSupplier.result2(result2 == null ? "" : result2));
       System.out.println();
     }
   }
