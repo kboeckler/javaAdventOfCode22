@@ -60,7 +60,11 @@ public class Runner {
       Class<?> aClass = Runner.class.getClassLoader().loadClass(binaryName);
       if (Solution.class.isAssignableFrom(aClass) && !Solution.class.equals(aClass)) {
         try {
-          aClass.getDeclaredConstructor().newInstance();
+          Solution solution = (Solution) aClass.getDeclaredConstructor().newInstance();
+          Day dayAnnotation = solution.getClass().getAnnotation(Day.class);
+          if (dayAnnotation != null) {
+            registerSolution(dayAnnotation.value(), solution);
+          }
         } catch (NoSuchMethodException | IllegalAccessException ex) {
           System.err.println(
               String.format("%s has no public no-args constructor", aClass.getName()));

@@ -1,6 +1,6 @@
 package com.github.kboeckler.adventOfCode22.solution;
 
-import com.github.kboeckler.adventOfCode22.Runner;
+import com.github.kboeckler.adventOfCode22.Day;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,11 +8,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Day(5)
 public class Day5 implements Solution {
-
-  static {
-    Runner.registerSolution(5, new Day5());
-  }
 
   @Override
   public Serializable solvePart1(String[] input) {
