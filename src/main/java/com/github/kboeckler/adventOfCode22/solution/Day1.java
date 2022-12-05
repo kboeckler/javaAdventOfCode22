@@ -1,7 +1,6 @@
 package com.github.kboeckler.adventOfCode22.solution;
 
 import com.github.kboeckler.adventOfCode22.Runner;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
