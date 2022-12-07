@@ -1,6 +1,7 @@
 package com.github.kboeckler.adventOfCode22.solution;
 
 import com.github.kboeckler.adventOfCode22.Day;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
