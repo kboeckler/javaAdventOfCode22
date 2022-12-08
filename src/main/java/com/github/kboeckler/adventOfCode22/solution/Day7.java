@@ -1,7 +1,6 @@
 package com.github.kboeckler.adventOfCode22.solution;
 
 import com.github.kboeckler.adventOfCode22.Day;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class Day7 implements Solution {
   public Serializable solvePart1(String[] input) {
     List<Command> commands = parseInput(input);
     Bash bash = new Bash();
-    commands.stream().forEach(command -> command.executeOn(bash));
+    commands.forEach(command -> command.executeOn(bash));
     return bash.getFilesystem().getAllFolders().stream()
         .map(Folder::getSize)
         .filter(size -> size <= 100_000)
@@ -27,7 +26,7 @@ public class Day7 implements Solution {
   public Serializable solvePart2(String[] input) {
     List<Command> commands = parseInput(input);
     Bash bash = new Bash();
-    commands.stream().forEach(command -> command.executeOn(bash));
+    commands.forEach(command -> command.executeOn(bash));
     int neededSpace = bash.getFilesystem().getRoot().getSize() - 40_000_000;
     return bash.getFilesystem().getAllFolders().stream()
         .map(Folder::getSize)
@@ -181,7 +180,7 @@ public class Day7 implements Solution {
 
     private final CommandExecution execution;
 
-    private List<String> outputRows = new ArrayList<>();
+    private final List<String> outputRows = new ArrayList<>();
 
     private Command(CommandExecution execution) {
       this.execution = execution;
@@ -189,11 +188,11 @@ public class Day7 implements Solution {
 
     public static Command parse(String command) {
       String[] split = command.split(" ");
-      CommandExecution execution = null;
+      CommandExecution execution;
       if (split[0].equals("cd")) {
         execution = (Command cmd, Bash bash) -> cmd.changeDirectory(bash, split[1]);
       } else {
-        execution = (Command cmd, Bash bash) -> cmd.listFiles(bash);
+        execution = Command::listFiles;
       }
       return new Command(execution);
     }
